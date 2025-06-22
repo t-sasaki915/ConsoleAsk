@@ -49,5 +49,6 @@ executable ConsoleAsk-exe
   build-depends:
       ConsoleAsk
     , base >=4.7 && <5
+    , text ==2.1.2
   default-language: Haskell2010
   default-extensions: OverloadedStrings, LambdaCase, QuasiQuotes

@@ -4,7 +4,7 @@ module System.Console.Ask.Behaviour
     , defaultBehaviour
     ) where
 
-data NewlineTiming = AfterPrompt | BeforePrompt deriving (Show, Eq)
+data NewlineTiming = AfterPrompt | BeforePrompt | None deriving (Show, Eq)
 
 newtype Behaviour = Behaviour
     { newlineTiming :: NewlineTiming
