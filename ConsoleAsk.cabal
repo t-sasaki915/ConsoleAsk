@@ -20,7 +20,7 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      System.Console.Ask
   other-modules:
       Paths_ConsoleAsk
   autogen-modules:
