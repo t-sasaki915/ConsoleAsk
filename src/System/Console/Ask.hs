@@ -15,12 +15,12 @@ module System.Console.Ask
 
 import           Control.Monad                (join)
 import           Control.Monad.IO.Class       (MonadIO (..))
+import           Data.Functor                 ((<&>))
 import           Data.Text                    (Text)
-import qualified Data.Text                    as Text
 import           System.Console.Ask.Behaviour
 import           System.Console.Ask.Internal
 
-data Ask a = Ask { runAsk' :: Behaviour -> IO a }
+newtype Ask a = Ask { runAsk' :: Behaviour -> IO a }
 
 runAsk :: Behaviour -> Ask a -> IO a
 runAsk = flip runAsk'
@@ -29,15 +29,12 @@ getBehaviour :: Ask Behaviour
 getBehaviour = Ask { runAsk' = return }
 
 instance Functor Ask where
-    fmap f ma = ma >>= return . f
+    fmap f ma = Ask { runAsk' = \behaviour -> liftIO (runAsk behaviour ma <&> f) }
 
 instance Applicative Ask where
     pure a = Ask { runAsk' = const (pure a) }
 
-    liftA2 f ma mb = do
-        a <- ma
-        b <- mb
-        return (f a b)
+    liftA2 f ma mb = ma >>= \a -> f a <$> mb
 
 instance Monad Ask where
     (>>=) fa f = Ask { runAsk' = \behaviour -> runAsk behaviour (join (liftIO (f <$> runAsk behaviour fa))) }

@@ -29,8 +29,8 @@ type Question = Text
 type Prompt = Text
 
 askMaybe_ :: Show a => (Text -> Maybe a) -> Question -> Prompt -> Behaviour -> IO (Maybe a)
-askMaybe_ func question prompt behaviour =
-    askMaybe__ func question prompt Nothing behaviour
+askMaybe_ func question prompt =
+    askMaybe__ func question prompt Nothing
 
 ask_ :: Show a => (Text -> Maybe a) -> Question -> Prompt -> Maybe a -> Behaviour -> IO a
 ask_ func question prompt defaultVal behaviour =
@@ -45,7 +45,7 @@ askMaybe__ func question prompt defaultVal behaviour = do
 
     TextIO.putStrLn question
     whenJust defaultVal $ \defaultVal' ->
-        TextIO.putStrLn ("Default: " `Text.append` (Text.show defaultVal'))
+        TextIO.putStrLn ("Default: " `Text.append` Text.show defaultVal')
     result <-
         readLineWithPrompt prompt >>= \case
             Nothing ->
