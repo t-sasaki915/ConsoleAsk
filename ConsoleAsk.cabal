@@ -20,6 +20,8 @@ source-repository head
 
 library
   exposed-modules:
+      System.Console.Ask.Behaviour
+      System.Console.Ask.Internal
       System.Console.Ask
   other-modules:
       Paths_ConsoleAsk
@@ -31,6 +33,7 @@ library
   build-depends:
       base >=4.7 && <5
     , text ==2.1.2
+    , regex-posix ==0.96.0.2
   default-language: Haskell2010
   default-extensions: OverloadedStrings, LambdaCase, QuasiQuotes
 
