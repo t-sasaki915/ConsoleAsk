@@ -1,3 +1,5 @@
+{-# LANGUAGE GeneralisedNewtypeDeriving #-}
+
 module System.Console.Ask
     ( NewlineTiming (..)
     , Behaviour (..)
@@ -13,9 +15,7 @@ module System.Console.Ask
     , askTextMaybe
     ) where
 
-import           Control.Monad                (join)
 import           Control.Monad.IO.Class       (MonadIO (..))
-import           Data.Functor                 ((<&>))
 import           Data.Text                    (Text)
 import           System.Console.Ask.Behaviour
 import           System.Console.Ask.Internal
@@ -29,15 +29,20 @@ getBehaviour :: Ask Behaviour
 getBehaviour = Ask { runAsk' = return }
 
 instance Functor Ask where
-    fmap f ma = Ask { runAsk' = \behaviour -> liftIO (runAsk behaviour ma <&> f) }
+    fmap f (Ask run) = Ask { runAsk' = \behaviour -> f <$> run behaviour }
 
 instance Applicative Ask where
     pure a = Ask { runAsk' = const (pure a) }
 
-    liftA2 f ma mb = ma >>= \a -> f a <$> mb
+    (Ask runF) <*> (Ask runA) = Ask $ \behaviour -> do
+        f <- runF behaviour
+        a <- runA behaviour
+        return (f a)
 
 instance Monad Ask where
-    (>>=) fa f = Ask { runAsk' = \behaviour -> runAsk behaviour (join (liftIO (f <$> runAsk behaviour fa))) }
+    (Ask runA) >>= f = Ask $ \behaviour -> do
+        a <- runA behaviour
+        runAsk behaviour (f a)
 
 instance MonadIO Ask where
     liftIO ma = Ask { runAsk' = const ma }
