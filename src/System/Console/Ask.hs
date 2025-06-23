@@ -38,7 +38,7 @@ runAsk = runAskT
 getBehaviour :: Monad m => AskT m Behaviour
 getBehaviour = AskT { runAskT' = return }
 
-instance Monad m => Functor (AskT m) where
+instance Functor m => Functor (AskT m) where
     fmap f (AskT run) = AskT { runAskT' = fmap f . run }
 
 instance Monad m => Applicative (AskT m) where
