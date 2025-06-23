@@ -1,11 +1,14 @@
 module System.Console.Ask
     ( NewlineTiming (..)
     , Behaviour (..)
-    , Ask (..)
+    , AskT (..)
     , Askable (..)
     , Question
     , Prompt
+    , Ask
     , defaultBehaviour
+    , runAskT
+    , runAsk'
     , runAsk
     , getBehaviour
     , ask
@@ -18,44 +21,52 @@ import           System.Console.Ask.Askable
 import           System.Console.Ask.Behaviour
 import           System.Console.Ask.Internal
 
-newtype Ask a = Ask { runAsk' :: Behaviour -> IO a }
+newtype AskT m a = AskT { runAskT' :: Behaviour -> m a }
+
+type Ask = AskT IO
+
+runAskT :: Behaviour -> AskT m a -> m a
+runAskT = flip runAskT'
+
+runAsk' :: Ask a -> Behaviour -> IO a
+runAsk' = runAskT'
 
 runAsk :: Behaviour -> Ask a -> IO a
-runAsk = flip runAsk'
+runAsk = runAskT
 
-getBehaviour :: Ask Behaviour
-getBehaviour = Ask { runAsk' = return }
+getBehaviour :: Monad m => AskT m Behaviour
+getBehaviour = AskT { runAskT' = return }
 
-instance Functor Ask where
-    fmap f (Ask run) = Ask { runAsk' = fmap f . run }
+instance Monad m => Functor (AskT m) where
+    fmap f (AskT run) = AskT { runAskT' = fmap f . run }
 
-instance Applicative Ask where
-    pure a = Ask { runAsk' = const (pure a) }
+instance Monad m => Applicative (AskT m) where
+    pure a = AskT { runAskT' = const (pure a) }
 
-    (Ask runF) <*> (Ask runA) = Ask $ \behaviour -> do
+    (AskT runF) <*> (AskT runA) = AskT $ \behaviour -> do
         f <- runF behaviour
         a <- runA behaviour
         return (f a)
 
-instance Monad Ask where
-    (Ask runA) >>= f = Ask $ \behaviour -> do
+instance Monad m => Monad (AskT m) where
+    (AskT runA) >>= f = AskT $ \behaviour -> do
         a <- runA behaviour
-        runAsk behaviour (f a)
+        runAskT behaviour (f a)
 
-instance MonadIO Ask where
-    liftIO ma = Ask { runAsk' = const ma }
+instance MonadIO m => MonadIO (AskT m) where
+    liftIO ma = AskT { runAskT' = const (liftIO ma) }
 
-ask :: Askable a => Question -> Prompt -> Ask a
+ask :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m a
 ask question prompt =
     getBehaviour >>=
         liftIO . ask_ fromText question prompt Nothing
 
-askOrElse :: Askable a => Question -> Prompt -> a -> Ask a
+askOrElse :: (MonadIO m, Askable a) => Question -> Prompt -> a -> AskT m a
 askOrElse question prompt defaultVal =
     getBehaviour >>=
         liftIO . ask_ fromText question prompt (Just defaultVal)
 
-askOptional :: Askable a => Question -> Prompt -> Ask (Maybe a)
+askOptional :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m (Maybe a)
 askOptional question prompt =
     getBehaviour >>=
         liftIO . askMaybe_ fromText question prompt
