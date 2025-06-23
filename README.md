@@ -3,6 +3,11 @@ A library that might be useful for asking users for many console inputs
 
 ## Example
 ```haskell
+import Data.Functor ((<&>))
+import Data.Text (Text)
+import Text.Parsec (char, digit, many1)
+import Text.Regex.TDFA ((=~))
+
 import System.Console.Ask
 
 data UserInformation = UserInformation
