@@ -18,6 +18,7 @@ module System.Console.Ask
     ) where
 
 import           Control.Monad.IO.Class       (MonadIO (..))
+import           Data.Maybe                   (fromJust)
 import           System.Console.Ask.Askable
 import           System.Console.Ask.Behaviour
 import           System.Console.Ask.Internal
@@ -59,15 +60,15 @@ instance MonadIO m => MonadIO (AskT m) where
 
 ask :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m a
 ask question prompt =
-    getBehaviour >>=
-        liftIO . ask_ fromText question prompt Nothing
+    fmap fromJust $ getBehaviour >>=
+        liftIO . ask_ True question prompt Nothing
 
 askOrElse :: (MonadIO m, Askable a) => Question -> Prompt -> a -> AskT m a
 askOrElse question prompt defaultVal =
-    getBehaviour >>=
-        liftIO . ask_ fromText question prompt (Just defaultVal)
+    fmap fromJust $ getBehaviour >>=
+        liftIO . ask_ True question prompt (Just defaultVal)
 
 askOptional :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m (Maybe a)
 askOptional question prompt =
     getBehaviour >>=
-        liftIO . askMaybe_ fromText question prompt
+        liftIO . ask_ False question prompt Nothing

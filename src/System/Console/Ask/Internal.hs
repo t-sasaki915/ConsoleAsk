@@ -4,9 +4,7 @@ module System.Console.Ask.Internal
     ( Question
     , Prompt
     , readLineWithPrompt
-    , askMaybe_
     , ask_
-    , askMaybe__
     ) where
 
 import           Control.Exception            (IOException, try)
@@ -14,6 +12,7 @@ import           Control.Monad                (when)
 import           Data.Text                    (Text)
 import qualified Data.Text                    as Text
 import qualified Data.Text.IO                 as TextIO
+import           System.Console.Ask.Askable   (Askable (..))
 import           System.Console.Ask.Behaviour (Behaviour (..),
                                                NewlineTiming (..))
 import           System.IO                    (hFlush, stdout)
@@ -36,42 +35,42 @@ readLineWithPrompt prompt = do
 type Question = Text
 type Prompt = Text
 
-askMaybe_ :: Show a => (Text -> Maybe a) -> Question -> Prompt -> Behaviour -> IO (Maybe a)
-askMaybe_ func question prompt =
-    askMaybe__ func question prompt Nothing
-
-ask_ :: Show a => (Text -> Maybe a) -> Question -> Prompt -> Maybe a -> Behaviour -> IO a
-ask_ func question prompt defaultVal behaviour =
-    askMaybe__ func question prompt defaultVal behaviour >>= \case
-        Just value -> return value
-        Nothing    -> ask_ func question prompt defaultVal behaviour
-
-askMaybe__ :: Show a => (Text -> Maybe a) -> Question -> Prompt -> Maybe a -> Behaviour -> IO (Maybe a)
-askMaybe__ func question prompt defaultVal behaviour = do
+ask_ :: (Askable a) => Bool -> Question -> Prompt -> Maybe a -> Behaviour -> IO (Maybe a)
+ask_ isMandatory question prompt defaultVal behaviour = do
     when (newlineTiming behaviour == BeforePrompt) $
         TextIO.putStrLn ""
 
     TextIO.putStrLn question
     whenJust defaultVal $ \defaultVal' ->
-        TextIO.putStrLn ("Default: " `Text.append` Text.show defaultVal')
+        let messageGenerator = defaultValueViewer behaviour in
+            TextIO.putStrLn (messageGenerator (Text.show defaultVal'))
 
     result <-
         readLineWithPrompt prompt >>= \case
             Nothing ->
                 case defaultVal of
-                    Just defaultVal' -> return (Just (Just defaultVal'))
-                    Nothing          -> return (Just Nothing)
+                    Just defaultVal'          -> return (Just (Just defaultVal'))
+                    Nothing | not isMandatory -> return (Just Nothing)
+                    Nothing -> do
+                        whenJust (mandatoryQuestionErrorMsg behaviour) $ \errorMsg ->
+                            TextIO.putStrLn errorMsg
+
+                        return Nothing
             Just x ->
-                case func x of
+                case fromText x of
                     Just x' -> return (Just (Just x'))
-                    Nothing -> return Nothing
+                    Nothing -> do
+                        whenJust (invalidInputErrorMsg behaviour) $ \errorMsg ->
+                            TextIO.putStrLn errorMsg
+
+                        return Nothing
 
     when (newlineTiming behaviour == AfterPrompt) $
         TextIO.putStrLn ""
 
     case result of
         Just result' -> return result'
-        Nothing      -> askMaybe__ func question prompt defaultVal behaviour
+        Nothing      -> ask_ isMandatory question prompt defaultVal behaviour
 
     where
         whenJust Nothing _  = return ()
