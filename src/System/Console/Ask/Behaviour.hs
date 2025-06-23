@@ -20,7 +20,7 @@ defaultBehaviour :: Behaviour
 defaultBehaviour =
     Behaviour
         { newlineTiming             = AfterPrompt
-        , defaultValueViewer        = Text.append "Default: "
+        , defaultValueViewer        = ("Default: " `Text.append`)
         , mandatoryQuestionErrorMsg = Just "This question is mandatory."
         , invalidInputErrorMsg      = Just "Invalid input."
         }
