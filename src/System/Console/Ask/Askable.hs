@@ -2,10 +2,10 @@
 
 module System.Console.Ask.Askable (Askable (..)) where
 
-import           Data.Text        (Text)
-import qualified Data.Text        as Text
-import           Text.Read        (readMaybe)
-import           Text.Regex.Posix ((=~))
+import           Data.Text       (Text)
+import qualified Data.Text       as Text
+import           Text.Read       (readMaybe)
+import           Text.Regex.TDFA ((=~))
 
 class Show a => Askable a where
     fromText :: Text -> Maybe a
@@ -30,10 +30,10 @@ instance Askable Double where
 
 instance Askable Bool where
     fromText text =
-        let lower = Text.unpack (Text.toLower text) in
-            if lower =~ ("^(t(rue)?|y(es)?|aye)$" :: String)
+        let lower = Text.toLower text in
+            if lower =~ ("^(t(rue)?|y(es)?|aye)$" :: Text)
                 then Just True
                 else
-                    if lower =~ ("^(f(alse)?|n(o|ae)?)$" :: String)
+                    if lower =~ ("^(f(alse)?|n(o|ae)?)$" :: Text)
                         then Just False
                         else Nothing
