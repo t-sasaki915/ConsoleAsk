@@ -5,7 +5,7 @@ A library that might be useful for asking users for many console inputs
 ```haskell
 import System.Console.Ask
 
-data UserInformation = Inputs
+data UserInformation = UserInformation
     { name              :: Text
     , age               :: Maybe Int
     , birthday          :: Date
