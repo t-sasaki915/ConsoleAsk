@@ -33,7 +33,12 @@ instance Askable EmailAddress where
 data Date = Date Int Int deriving Show
 
 instance Askable Date where
-    -- TODO
+    fromText = fromParsec $ do
+        day   <- many1 digit <&> read
+        _     <- char '/'
+        month <- many1 digit <&> read
+
+        return (Date day month)
 
 main :: IO ()
 main = do
