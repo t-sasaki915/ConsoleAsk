@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module System.Console.Ask.Internal
     ( Question
     , Prompt
@@ -8,6 +10,7 @@ module System.Console.Ask.Internal
     , whenJust
     ) where
 
+import           Control.Exception            (IOException, try)
 import           Control.Monad                (when)
 import           Data.Text                    (Text)
 import qualified Data.Text                    as Text
@@ -21,9 +24,14 @@ readLineWithPrompt prompt = do
     TextIO.putStr prompt
     hFlush stdout
 
-    TextIO.getLine >>= \case
+    result <- try $ TextIO.getLine >>= \case
         "" -> return Nothing
         x  -> return (Just x)
+
+    case result of
+        Right result'           -> return result'
+        Left (_ :: IOException) -> return Nothing
+
 
 type Question = Text
 type Prompt = Text
