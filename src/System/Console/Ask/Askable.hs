@@ -2,8 +2,9 @@
 
 module System.Console.Ask.Askable (Askable (..)) where
 
-import           Data.Text (Text, unpack)
-import           Text.Read (readMaybe)
+import           Data.Text        as Text
+import           Text.Read        (readMaybe)
+import           Text.Regex.Posix ((=~))
 
 class Show a => Askable a where
     fromText :: Text -> Maybe a
@@ -12,16 +13,26 @@ instance Askable Text where
     fromText = Just
 
 instance Askable String where
-    fromText = Just . unpack
+    fromText = Just . Text.unpack
 
 instance Askable Int where
-    fromText = readMaybe . unpack
+    fromText = readMaybe . Text.unpack
 
 instance Askable Integer where
-    fromText = readMaybe . unpack
+    fromText = readMaybe . Text.unpack
 
 instance Askable Float where
-    fromText = readMaybe . unpack
+    fromText = readMaybe . Text.unpack
 
 instance Askable Double where
-    fromText = readMaybe . unpack
+    fromText = readMaybe . Text.unpack
+
+instance Askable Bool where
+    fromText text =
+        let lower = Text.unpack (Text.toLower text) in
+            if lower =~ ("^(t(rue)?|y(es)?|aye)$" :: String)
+                then Just True
+                else
+                    if lower =~ ("^(f(alse)?|n(o|ae)?)$" :: String)
+                        then Just False
+                        else Nothing
