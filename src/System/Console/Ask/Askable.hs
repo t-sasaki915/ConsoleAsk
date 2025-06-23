@@ -1,14 +1,21 @@
 {-# LANGUAGE FlexibleInstances #-}
 
-module System.Console.Ask.Askable (Askable (..)) where
+module System.Console.Ask.Askable
+    ( Askable (..)
+    , fromParsec
+    ) where
 
 import           Data.Text       (Text)
 import qualified Data.Text       as Text
+import           Text.Parsec     (Parsec, parse)
 import           Text.Read       (readMaybe)
 import           Text.Regex.TDFA ((=~))
 
 class Show a => Askable a where
     fromText :: Text -> Maybe a
+
+fromParsec :: Parsec Text () a -> Text -> Maybe a
+fromParsec parser = either (const Nothing) Just . parse parser ""
 
 instance Askable Text where
     fromText = Just

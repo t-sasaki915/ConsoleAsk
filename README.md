@@ -27,7 +27,7 @@ askUserInformation =
         <*> ask         "What is your email address?"           "> "
         <*> askOrElse   "Do you need our update notifications?" "> " False
 
-data EmailAddress = EmailAddress Text deriving Show
+newtype EmailAddress = EmailAddress Text deriving Show
 
 instance Askable EmailAddress where
     fromText text =
@@ -50,4 +50,23 @@ main = do
     userInfo <- runAsk defaultBehaviour askUserInformation
 
     print userInfo
+```
+```
+What is your name?
+> Toma Sasaki
+
+How old are you?
+>
+
+When is your birthday?
+> 15/9
+
+What is your email address?
+> me@t-sasaki.net
+
+Do you need our update notifications?
+Default: False
+> aye
+
+UserInformation {name = "Toma Sasaki", age = Nothing, birthday = Date 15 9, emailAddress = EmailAddress "me@t-sasaki.net", needNotifications = True}
 ```
