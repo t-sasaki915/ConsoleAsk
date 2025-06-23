@@ -4,19 +4,19 @@ module System.Console.Ask
     ( NewlineTiming (..)
     , Behaviour (..)
     , Ask (..)
+    , Askable (..)
     , Question
     , Prompt
     , defaultBehaviour
     , runAsk
     , getBehaviour
     , ask
-    , askMaybe
-    , askText
-    , askTextMaybe
+    , askOrElse
+    , askOptional
     ) where
 
 import           Control.Monad.IO.Class       (MonadIO (..))
-import           Data.Text                    (Text)
+import           System.Console.Ask.Askable
 import           System.Console.Ask.Behaviour
 import           System.Console.Ask.Internal
 
@@ -47,18 +47,17 @@ instance Monad Ask where
 instance MonadIO Ask where
     liftIO ma = Ask { runAsk' = const ma }
 
-ask :: Show a => (Text -> Maybe a) -> Question -> Prompt -> Maybe a -> Ask a
-ask func question prompt defaultVal =
+ask :: Askable a => Question -> Prompt -> Ask a
+ask question prompt =
     getBehaviour >>=
-        liftIO . ask_ func question prompt defaultVal
+        liftIO . ask_ fromText question prompt Nothing
 
-askMaybe :: Show a => (Text -> Maybe a) -> Question -> Prompt -> Ask (Maybe a)
-askMaybe func question prompt =
+askOrElse :: Askable a => Question -> Prompt -> a -> Ask a
+askOrElse question prompt defaultVal =
     getBehaviour >>=
-        liftIO . askMaybe_ func question prompt
+        liftIO . ask_ fromText question prompt (Just defaultVal)
 
-askText :: Question -> Prompt -> Maybe Text -> Ask Text
-askText = ask Just
-
-askTextMaybe :: Question -> Prompt -> Ask (Maybe Text)
-askTextMaybe = askMaybe Just
+askOptional :: Askable a => Question -> Prompt -> Ask (Maybe a)
+askOptional question prompt =
+    getBehaviour >>=
+        liftIO . askMaybe_ fromText question prompt

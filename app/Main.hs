@@ -6,15 +6,15 @@ import           System.Console.Ask
 data Inputs = Inputs
     { textInput1 :: Text
     , textInput2 :: Text
-    , textInput3 :: Text
+    , textInput3 :: Int
     } deriving Show
 
 askInputs :: Ask Inputs
 askInputs =
     Inputs
-        <$> askText "What is textInput1?" "Text> " (Just "ASDF")
-        <*> askText "What is textInput2?" "Text> " Nothing
-        <*> askText "What is textInput3?" "Text> " Nothing
+        <$> askOrElse "What is textInput1?" "Text> " "ASDF"
+        <*> ask       "What is textInput2?" "Text> "
+        <*> ask       "What is textInput3?" "Text> "
 
 main :: IO ()
 main = do

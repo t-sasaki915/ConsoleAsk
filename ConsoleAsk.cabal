@@ -20,6 +20,7 @@ source-repository head
 
 library
   exposed-modules:
+      System.Console.Ask.Askable
       System.Console.Ask.Behaviour
       System.Console.Ask.Internal
       System.Console.Ask
