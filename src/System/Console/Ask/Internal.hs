@@ -7,7 +7,6 @@ module System.Console.Ask.Internal
     , askMaybe_
     , ask_
     , askMaybe__
-    , whenJust
     ) where
 
 import           Control.Exception            (IOException, try)
@@ -24,9 +23,10 @@ readLineWithPrompt prompt = do
     TextIO.putStr prompt
     hFlush stdout
 
-    result <- try $ TextIO.getLine >>= \case
-        "" -> return Nothing
-        x  -> return (Just x)
+    result <-
+        try $ TextIO.getLine >>= \case
+            "" -> return Nothing
+            x  -> return (Just x)
 
     case result of
         Right result'           -> return result'
@@ -73,6 +73,6 @@ askMaybe__ func question prompt defaultVal behaviour = do
         Just result' -> return result'
         Nothing      -> askMaybe__ func question prompt defaultVal behaviour
 
-whenJust :: Monad m => Maybe a -> (a -> m ()) -> m ()
-whenJust Nothing _  = return ()
-whenJust (Just x) f = f x
+    where
+        whenJust Nothing _  = return ()
+        whenJust (Just x) f = f x
