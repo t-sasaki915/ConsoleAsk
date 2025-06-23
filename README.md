@@ -5,7 +5,7 @@ A library that might be useful for asking users for many console inputs
 ```haskell
 import System.Console.Ask
 
-data Inputs = Inputs
+data UserInformation = Inputs
     { name              :: Text
     , age               :: Maybe Int
     , birthday          :: Date
@@ -13,9 +13,9 @@ data Inputs = Inputs
     , needNotifications :: Bool
     } deriving Show
 
-askInputs :: Ask Inputs
-askInputs =
-    Inputs
+askUserInformation :: Ask UserInformation
+askUserInformation =
+    UserInformation
         <$> ask         "What is your name?"                    "> "
         <*> askOptional "How old are you?"                      "> "
         <*> ask         "When is your birthday?"                "> "
@@ -42,7 +42,7 @@ instance Askable Date where
 
 main :: IO ()
 main = do
-    inputs <- runAsk defaultBehaviour askInputs
+    userInfo <- runAsk defaultBehaviour askUserInformation
 
-    print inputs
+    print userInfo
 ```
