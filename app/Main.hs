@@ -24,4 +24,4 @@ main :: IO ()
 main = do
     inputs <- runAsk defaultBehaviour askInputs
 
-    putStrLn (show inputs)
+    print inputs

@@ -2,7 +2,8 @@
 
 module System.Console.Ask.Askable (Askable (..)) where
 
-import           Data.Text        as Text
+import           Data.Text        (Text)
+import qualified Data.Text        as Text
 import           Text.Read        (readMaybe)
 import           Text.Regex.Posix ((=~))
 

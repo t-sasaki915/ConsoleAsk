@@ -1,5 +1,3 @@
-{-# LANGUAGE GeneralisedNewtypeDeriving #-}
-
 module System.Console.Ask
     ( NewlineTiming (..)
     , Behaviour (..)
@@ -29,7 +27,7 @@ getBehaviour :: Ask Behaviour
 getBehaviour = Ask { runAsk' = return }
 
 instance Functor Ask where
-    fmap f (Ask run) = Ask { runAsk' = \behaviour -> f <$> run behaviour }
+    fmap f (Ask run) = Ask { runAsk' = fmap f . run }
 
 instance Applicative Ask where
     pure a = Ask { runAsk' = const (pure a) }
