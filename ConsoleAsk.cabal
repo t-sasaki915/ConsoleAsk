@@ -38,19 +38,3 @@ library
     , parsec ==3.1.18.0
   default-language: Haskell2010
   default-extensions: OverloadedStrings, LambdaCase, QuasiQuotes
-
-executable ConsoleAsk-exe
-  main-is: Main.hs
-  other-modules:
-      Paths_ConsoleAsk
-  autogen-modules:
-      Paths_ConsoleAsk
-  hs-source-dirs:
-      app
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      ConsoleAsk
-    , base >=4.7 && <5
-    , text ==2.1.2
-  default-language: Haskell2010
-  default-extensions: OverloadedStrings, LambdaCase, QuasiQuotes
