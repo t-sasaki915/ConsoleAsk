@@ -1,5 +1,6 @@
 module System.Console.Ask
     ( NewlineTiming (..)
+    , DefaultValueStyle (..)
     , Behaviour (..)
     , AskT (..)
     , Askable (..)
@@ -10,7 +11,6 @@ module System.Console.Ask
     , runAskT
     , runAsk'
     , runAsk
-    , getBehaviour
     , ask
     , askOrElse
     , askOptional
