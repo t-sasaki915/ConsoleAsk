@@ -37,8 +37,8 @@ type Prompt = Text
 
 ask_ :: (Askable a) => Bool -> Question -> Prompt -> Maybe a -> Behaviour -> IO (Maybe a)
 ask_ isMandatory question prompt defaultVal behaviour = do
-    when (newlineTiming behaviour == BeforePrompt) $
-        TextIO.putStrLn ""
+    when (newlineTiming behaviour == BeforePrompt)
+        putNewLine
 
     TextIO.putStrLn question
     whenJust defaultVal $ \defaultVal' ->
@@ -52,21 +52,21 @@ ask_ isMandatory question prompt defaultVal behaviour = do
                     Just defaultVal'          -> return (Just (Just defaultVal'))
                     Nothing | not isMandatory -> return (Just Nothing)
                     Nothing -> do
-                        whenJust (mandatoryQuestionErrorMsg behaviour) $ \errorMsg ->
-                            TextIO.putStrLn errorMsg
+                        whenJust (mandatoryQuestionErrorMsg behaviour)
+                            TextIO.putStrLn
 
                         return Nothing
             Just x ->
                 case fromText x of
                     Just x' -> return (Just (Just x'))
                     Nothing -> do
-                        whenJust (invalidInputErrorMsg behaviour) $ \errorMsg ->
-                            TextIO.putStrLn errorMsg
+                        whenJust (invalidInputErrorMsg behaviour)
+                            TextIO.putStrLn
 
                         return Nothing
 
-    when (newlineTiming behaviour == AfterPrompt) $
-        TextIO.putStrLn ""
+    when (newlineTiming behaviour == AfterPrompt)
+        putNewLine
 
     case result of
         Just result' -> return result'
@@ -75,3 +75,5 @@ ask_ isMandatory question prompt defaultVal behaviour = do
     where
         whenJust Nothing _  = return ()
         whenJust (Just x) f = f x
+
+        putNewLine = TextIO.putStrLn ""
