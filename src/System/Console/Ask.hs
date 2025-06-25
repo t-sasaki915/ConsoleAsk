@@ -37,7 +37,7 @@ runAsk :: Behaviour -> Ask a -> IO a
 runAsk = runAskT
 
 getBehaviour :: Monad m => AskT m Behaviour
-getBehaviour = AskT { runAskT' = return }
+getBehaviour = AskT { runAskT' = pure }
 
 instance Functor m => Functor (AskT m) where
     fmap f (AskT run) = AskT { runAskT' = fmap f . run }
@@ -48,7 +48,7 @@ instance Monad m => Applicative (AskT m) where
     (AskT runF) <*> (AskT runA) = AskT $ \behaviour -> do
         f <- runF behaviour
         a <- runA behaviour
-        return (f a)
+        pure (f a)
 
 instance Monad m => Monad (AskT m) where
     (AskT runA) >>= f = AskT $ \behaviour -> do

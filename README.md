@@ -43,7 +43,7 @@ instance Askable Date where
         _     <- char '/'
         month <- many1 digit <&> read
 
-        return (Date day month)
+        pure (Date day month)
 
 main :: IO ()
 main = do

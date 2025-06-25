@@ -23,12 +23,12 @@ readLineWithPrompt prompt = do
 
     result <-
         try $ TextIO.getLine >>= \case
-            "" -> return Nothing
-            x  -> return (Just x)
+            "" -> pure Nothing
+            x  -> pure (Just x)
 
     case result of
-        Right result'           -> return result'
-        Left (_ :: IOException) -> return Nothing
+        Right result'           -> pure result'
+        Left (_ :: IOException) -> pure Nothing
 
 
 type Question = Text
@@ -57,31 +57,31 @@ ask_ isMandatory question prompt defaultVal behaviour = do
         readLineWithPrompt prompt >>= \case
             Nothing ->
                 case defaultVal of
-                    Just defaultVal'          -> return (Just (Just defaultVal'))
-                    Nothing | not isMandatory -> return (Just Nothing)
+                    Just defaultVal'          -> pure (Just (Just defaultVal'))
+                    Nothing | not isMandatory -> pure (Just Nothing)
                     Nothing -> do
                         whenJust (mandatoryQuestionErrorMsg behaviour)
                             TextIO.putStrLn
 
-                        return Nothing
+                        pure Nothing
             Just x ->
                 case fromText x of
-                    Just x' -> return (Just (Just x'))
+                    Just x' -> pure (Just (Just x'))
                     Nothing -> do
                         whenJust (invalidInputErrorMsg behaviour)
                             TextIO.putStrLn
 
-                        return Nothing
+                        pure Nothing
 
     when (newlineTiming behaviour == AfterPrompt)
         putNewLine
 
     case result of
-        Just result' -> return result'
+        Just result' -> pure result'
         Nothing      -> ask_ isMandatory question prompt defaultVal behaviour
 
     where
-        whenJust Nothing _  = return ()
+        whenJust Nothing _  = pure ()
         whenJust (Just x) f = f x
 
         putNewLine = TextIO.putStrLn ""
