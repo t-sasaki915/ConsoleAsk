@@ -42,9 +42,6 @@ instance Askable Char where
 instance Askable a => Askable [a] where
     fromText = fromParsec $ toParsec fromText <> many (char ',' *> toParsec fromText)
 
-instance Askable String where
-    fromText = Just . Text.unpack
-
 instance Askable Bool where
     fromText text =
         let lower = Text.toLower text in
