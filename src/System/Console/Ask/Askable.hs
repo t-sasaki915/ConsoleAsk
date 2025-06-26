@@ -3,11 +3,12 @@
 module System.Console.Ask.Askable
     ( Askable (..)
     , fromParsec
+    , toParsec
     ) where
 
 import           Data.Text       (Text)
 import qualified Data.Text       as Text
-import           Text.Parsec     (Parsec, parse)
+import           Text.Parsec     hiding (lower)
 import           Text.Read       (readMaybe)
 import           Text.Regex.TDFA ((=~))
 
@@ -16,6 +17,9 @@ class Show a => Askable a where
 
 fromParsec :: Parsec Text () a -> Text -> Maybe a
 fromParsec parser = either (const Nothing) Just . parse parser ""
+
+toParsec :: (Text -> Maybe a) -> Parsec Text () a
+toParsec f = getInput >>= maybe (fail "parse error") pure . f
 
 instance Askable Text where
     fromText = Just
@@ -34,6 +38,12 @@ instance Askable Float where
 
 instance Askable Double where
     fromText = readMaybe . Text.unpack
+
+instance Askable Char where
+    fromText = fromParsec (anyChar <* eof)
+
+instance Askable a => Askable [a] where
+    fromText = fromParsec $ many1 (char ',' *> toParsec fromText)
 
 instance Askable Bool where
     fromText text =
