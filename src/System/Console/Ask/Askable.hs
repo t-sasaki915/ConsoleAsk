@@ -24,9 +24,6 @@ toParsec f = getInput >>= maybe (fail "parse error") pure . f
 instance Askable Text where
     fromText = Just
 
-instance Askable String where
-    fromText = Just . Text.unpack
-
 instance Askable Int where
     fromText = readMaybe . Text.unpack
 
@@ -43,7 +40,10 @@ instance Askable Char where
     fromText = fromParsec (anyChar <* eof)
 
 instance Askable a => Askable [a] where
-    fromText = fromParsec $ many1 (char ',' *> toParsec fromText)
+    fromText = fromParsec $ toParsec fromText <> many (char ',' *> toParsec fromText)
+
+instance Askable String where
+    fromText = Just . Text.unpack
 
 instance Askable Bool where
     fromText text =
