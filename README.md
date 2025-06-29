@@ -92,7 +92,7 @@ What is your email address?
 UserInformation
     { name = "Toma Sasaki"
     , age = Nothing
-    , birthday = Date 15 9
+    , birthday = 15/9
     , notificationPreference =
         NotificationPreference
             { needNotifications = True
