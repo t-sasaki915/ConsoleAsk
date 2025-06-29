@@ -45,7 +45,7 @@ instance Askable a => Askable [a] where
 instance Askable Bool where
     fromText text =
         let lower = Text.toLower text in
-            if lower =~ ("^(t(rue)?|y(es)?|aye)$" :: Text)
+            if lower =~ ("^(t(rue)?|y(es|eah)?|aye)$" :: Text)
                 then Just True
                 else
                     if lower =~ ("^(f(alse)?|n(o|ae)?)$" :: Text)
