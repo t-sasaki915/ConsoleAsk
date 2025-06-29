@@ -3,7 +3,6 @@
 module System.Console.Ask.Askable
     ( Askable (..)
     , fromParsec
-    , defaultToText
     ) where
 
 import           Data.Text       (Text)
@@ -12,12 +11,8 @@ import           Text.Parsec     hiding (lower)
 import           Text.Read       (readMaybe)
 import           Text.Regex.TDFA ((=~))
 
-class Askable a where
+class Show a => Askable a where
     fromText :: Text -> Maybe a
-    toText    :: a -> Text
-
-defaultToText :: (Show a, Askable a) => a -> Text
-defaultToText = Text.show
 
 fromParsec :: Parsec Text () a -> Text -> Maybe a
 fromParsec parser = either (const Nothing) Just . parse parser ""
