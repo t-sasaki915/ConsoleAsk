@@ -28,7 +28,7 @@ askUserInformation =
         <$> ask         "What is your name?"                    "> "
         <*> askOptional "How old are you?"                      "> "
         <*> ask         "When is your birthday?"                "> "
-        <*> askNotificatonPreference
+        <*> askNotificationPreference
 
 askNotificationPreference :: Ask NotificationPreference
 askNotificationPreference = do
