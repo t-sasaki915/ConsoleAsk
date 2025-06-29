@@ -18,11 +18,11 @@ class Show a => Askable a where
 fromParsec :: Parsec Text () a -> Text -> Maybe a
 fromParsec parser = either (const Nothing) Just . parse parser ""
 
-toParsec :: (Text -> Maybe a) -> Parsec Text () a
-toParsec f = getInput >>= maybe (fail "parse error") pure . f
-
 instance Askable Text where
     fromText = Just
+
+instance Askable String where
+    fromText = Just . Text.pack
 
 instance Askable Int where
     fromText = readMaybe . Text.unpack
@@ -38,9 +38,6 @@ instance Askable Double where
 
 instance Askable Char where
     fromText = fromParsec (anyChar <* eof)
-
-instance Askable a => Askable [a] where
-    fromText = fromParsec $ toParsec fromText <> many (char ',' *> toParsec fromText)
 
 instance Askable Bool where
     fromText text =
