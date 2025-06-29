@@ -78,8 +78,7 @@ How old are you?
 When is your birthday?
 > 15/9
 
-Do you need our update notifications?
-Default: False
+Do you need our update notifications? (Default: False)
 > aye
 
 What is your email address?
