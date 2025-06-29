@@ -15,7 +15,6 @@ module System.Console.Ask
     , askOrElse
     , askOptional
     , fromParsec
-    , defaultToText
     ) where
 
 import           Control.Monad.IO.Class       (MonadIO (..))
