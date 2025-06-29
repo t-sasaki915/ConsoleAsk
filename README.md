@@ -4,7 +4,8 @@ Simple CLI user input library
 ## Example
 ```haskell
 import Data.Functor ((<&>))
-import Data.Text (Text)
+import Data.Text (Text, show)
+import Prelude hiding (show)
 import Text.Parsec (char, digit, many1)
 import Text.Regex.TDFA ((=~))
 
@@ -52,6 +53,8 @@ instance Askable EmailAddress where
             then Just (EmailAddress text)
             else Nothing
 
+    toText = defaultToText
+
 data Date = Date Int Int deriving Show
 
 instance Askable Date where
@@ -61,6 +64,8 @@ instance Askable Date where
         month <- many1 digit <&> read
 
         pure (Date day month)
+
+    toText (Date month day) = show month <> "/" <> show day
 
 main :: IO ()
 main = do
