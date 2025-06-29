@@ -11,6 +11,10 @@ module System.Console.Ask
     , runAskT
     , runAsk'
     , runAsk
+    , defaultPrompt
+    , ask'
+    , askOrElse'
+    , askOptional'
     , ask
     , askOrElse
     , askOptional
@@ -58,19 +62,31 @@ instance Monad m => Monad (AskT m) where
 instance MonadIO m => MonadIO (AskT m) where
     liftIO ma = AskT { runAskT' = const (liftIO ma) }
 
-ask :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m a
-ask question prompt =
+defaultPrompt :: Prompt
+defaultPrompt = "> "
+
+ask' :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m a
+ask' question prompt =
     fmap fromJust $
         getBehaviour >>=
             liftIO . ask_ True question prompt Nothing
 
-askOrElse :: (MonadIO m, Askable a) => Question -> Prompt -> a -> AskT m a
-askOrElse question prompt defaultVal =
+askOrElse' :: (MonadIO m, Askable a) => Question -> a -> Prompt -> AskT m a
+askOrElse' question defaultVal prompt =
     fmap fromJust $
         getBehaviour >>=
             liftIO . ask_ True question prompt (Just defaultVal)
 
-askOptional :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m (Maybe a)
-askOptional question prompt =
+askOptional' :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m (Maybe a)
+askOptional' question prompt =
     getBehaviour >>=
         liftIO . ask_ False question prompt Nothing
+
+ask :: (MonadIO m, Askable a) => Question -> AskT m a
+ask question = ask' question defaultPrompt
+
+askOrElse :: (MonadIO m, Askable a) => Question -> a -> AskT m a
+askOrElse question defaultVal = askOrElse' question defaultVal defaultPrompt
+
+askOptional :: (MonadIO m, Askable a) => Question -> AskT m (Maybe a)
+askOptional question = askOptional' question defaultPrompt

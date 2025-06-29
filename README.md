@@ -25,18 +25,18 @@ data NotificationPreference = NotificationPreference
 askUserInformation :: Ask UserInformation
 askUserInformation =
     UserInformation
-        <$> ask         "What is your name?"                    "> "
-        <*> askOptional "How old are you?"                      "> "
-        <*> ask         "When is your birthday?"                "> "
+        <$> ask         "What is your name?"
+        <*> askOptional "How old are you?"
+        <*> ask         "When is your birthday?"
         <*> askNotificationPreference
 
 askNotificationPreference :: Ask NotificationPreference
 askNotificationPreference = do
-    needNotifications' <- askOrElse "Do you need our update notifications?" "> " False
+    needNotifications' <- askOrElse "Do you need our update notifications?" False
 
     emailAddress' <-
         if needNotifications'
-            then Just <$> ask "What is your email address?" "> "
+            then Just <$> ask "What is your email address?"
             else pure Nothing
 
     pure NotificationPreference
