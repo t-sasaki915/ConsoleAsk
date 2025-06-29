@@ -11,11 +11,15 @@ import Text.Regex.TDFA ((=~))
 import System.Console.Ask
 
 data UserInformation = UserInformation
-    { name              :: Text
-    , age               :: Maybe Int
-    , birthday          :: Date
-    , emailAddress      :: EmailAddress
-    , needNotifications :: Bool
+    { name                   :: Text
+    , age                    :: Maybe Int
+    , birthday               :: Date
+    , notificationPreference :: NotificationPreference
+    } deriving Show
+
+data NotificationPreference = NotificationPreference
+    { needNotifications :: Bool
+    , emailAddress      :: Maybe EmailAddress
     } deriving Show
 
 askUserInformation :: Ask UserInformation
@@ -24,8 +28,21 @@ askUserInformation =
         <$> ask         "What is your name?"                    "> "
         <*> askOptional "How old are you?"                      "> "
         <*> ask         "When is your birthday?"                "> "
-        <*> ask         "What is your email address?"           "> "
-        <*> askOrElse   "Do you need our update notifications?" "> " False
+        <*> askNotificatonPreference
+
+askNotificationPreference :: Ask NotificationPreference
+askNotificationPreference = do
+    needNotifications' <- askOrElse "Do you need our update notifications?" "> " False
+
+    emailAddress' <-
+        if needNotifications'
+            then Just <$> ask "What is your email address?" "> "
+            else pure Nothing
+
+    pure NotificationPreference
+        { needNotifications = needNotifications'
+        , emailAddress      = emailAddress'
+        }
 
 newtype EmailAddress = EmailAddress Text deriving Show
 
@@ -61,12 +78,21 @@ How old are you?
 When is your birthday?
 > 15/9
 
-What is your email address?
-> me@t-sasaki.net
-
 Do you need our update notifications?
 Default: False
 > aye
 
-UserInformation {name = "Toma Sasaki", age = Nothing, birthday = Date 15 9, emailAddress = EmailAddress "me@t-sasaki.net", needNotifications = True}
+What is your email address?
+> me@t-sasaki.net
+
+UserInformation
+    { name = "Toma Sasaki"
+    , age = Nothing
+    , birthday = Date 15 9
+    , notificationPreference =
+        NotificationPreference
+            { needNotifications = True
+            , emailAddress = Just (EmailAddress "me@t-sasaki.net")
+            }
+    }
 ```
