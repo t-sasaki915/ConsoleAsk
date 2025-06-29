@@ -60,13 +60,15 @@ instance MonadIO m => MonadIO (AskT m) where
 
 ask :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m a
 ask question prompt =
-    fmap fromJust $ getBehaviour >>=
-        liftIO . ask_ True question prompt Nothing
+    fmap fromJust $
+        getBehaviour >>=
+            liftIO . ask_ True question prompt Nothing
 
 askOrElse :: (MonadIO m, Askable a) => Question -> Prompt -> a -> AskT m a
 askOrElse question prompt defaultVal =
-    fmap fromJust $ getBehaviour >>=
-        liftIO . ask_ True question prompt (Just defaultVal)
+    fmap fromJust $
+        getBehaviour >>=
+            liftIO . ask_ True question prompt (Just defaultVal)
 
 askOptional :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m (Maybe a)
 askOptional question prompt =
