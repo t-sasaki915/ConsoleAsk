@@ -65,7 +65,7 @@ instance Askable Date where
 
         pure (Date day month)
 
-    toText (Date month day) = show month <> "/" <> show day
+    toText (Date day month) = show day <> "/" <> show month
 
 main :: IO ()
 main = do
