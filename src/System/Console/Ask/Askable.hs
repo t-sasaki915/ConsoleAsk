@@ -21,7 +21,7 @@ instance Askable Text where
     fromText = Just
 
 instance Askable String where
-    fromText = Just . Text.pack
+    fromText = Just . Text.unpack
 
 instance Askable Int where
     fromText = readMaybe . Text.unpack
