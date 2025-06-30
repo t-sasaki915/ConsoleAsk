@@ -25,10 +25,10 @@ import           System.Console.Ask.Internal
 
 newtype AskT m a = AskT (Behaviour -> m a)
 
-type Ask = AskT IO
-
 runAskT :: Behaviour -> AskT m a -> m a
 runAskT behaviour (AskT run) = run behaviour
+
+type Ask = AskT IO
 
 runAsk :: Behaviour -> Ask a -> IO a
 runAsk = runAskT
