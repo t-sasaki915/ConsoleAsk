@@ -14,6 +14,7 @@ module System.Console.Ask
     , ask
     , askOrElse
     , askOptional
+    , liftIO
     ) where
 
 import           Control.Monad.IO.Class       (MonadIO (..))
