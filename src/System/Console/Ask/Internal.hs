@@ -34,7 +34,7 @@ readLineWithPrompt prompt = do
 type Question = Text
 type Prompt = Text
 
-ask_ :: (Askable a) => Bool -> Question -> Prompt -> Maybe a -> Behaviour -> IO (Maybe a)
+ask_ :: Askable a => Bool -> Question -> Prompt -> Maybe a -> Behaviour -> IO (Maybe a)
 ask_ isMandatory question prompt defaultVal behaviour = do
     when (newlineTiming behaviour == BeforePrompt)
         putNewLine
