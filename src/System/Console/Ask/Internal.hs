@@ -8,7 +8,6 @@ module System.Console.Ask.Internal
     ) where
 
 import           Control.Exception            (IOException, try)
-import           Control.Lens                 ((^.))
 import           Control.Monad                (when)
 import           Data.Text                    (Text)
 import qualified Data.Text                    as Text
@@ -37,7 +36,7 @@ type Prompt = Text
 
 ask_ :: Askable a => Bool -> Question -> Prompt -> Maybe a -> Behaviour -> IO (Maybe a)
 ask_ isMandatory question prompt defaultVal behaviour = do
-    when (behaviour ^. newlineTiming == BeforePrompt)
+    when (_newlineTiming behaviour == BeforePrompt)
         putNewLine
 
     case defaultVal of
@@ -45,8 +44,8 @@ ask_ isMandatory question prompt defaultVal behaviour = do
             TextIO.putStrLn question
 
         Just defaultVal' ->
-            let defaultValMessage = (behaviour ^. defaultValueViewer) (Text.show defaultVal') in
-                case behaviour ^. defaultValueStyle of
+            let defaultValMessage = _defaultValueViewer behaviour (Text.show defaultVal') in
+                case _defaultValueStyle behaviour of
                     OnQuestionLine ->
                         TextIO.putStrLn (question <> " (" <> defaultValMessage <> ")")
 
@@ -61,7 +60,7 @@ ask_ isMandatory question prompt defaultVal behaviour = do
                     Just defaultVal'          -> pure (Just (Just defaultVal'))
                     Nothing | not isMandatory -> pure (Just Nothing)
                     Nothing -> do
-                        whenJust (behaviour ^. mandatoryQuestionErrorMsg)
+                        whenJust (_mandatoryQuestionErrorMsg behaviour)
                             TextIO.putStrLn
 
                         pure Nothing
@@ -69,12 +68,12 @@ ask_ isMandatory question prompt defaultVal behaviour = do
                 case fromText x of
                     Just x' -> pure (Just (Just x'))
                     Nothing -> do
-                        whenJust (behaviour ^. invalidInputErrorMsg)
+                        whenJust (_invalidInputErrorMsg behaviour)
                             TextIO.putStrLn
 
                         pure Nothing
 
-    when (behaviour ^. newlineTiming == AfterPrompt)
+    when (_newlineTiming behaviour == AfterPrompt)
         putNewLine
 
     case result of
