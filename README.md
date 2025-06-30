@@ -100,11 +100,12 @@ UserInformation
 ## Features
 - Automatically parses input values to `Askable` instances. (See also: [Askable.hs](https://github.com/t-sasaki915/ConsoleAsk/blob/main/src/System/Console/Ask/Askable.hs))
 ```haskell
+import Control.Monad.IO.Class (liftIO)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.IO as TextIO
 
-import System.Console.Ask (Ask, ask, askOptional, askOrElse, defaultBehaviour, liftIO, runAsk)
+import System.Console.Ask (Ask, ask, askOptional, askOrElse, defaultBehaviour, runAsk)
 
 main :: IO ()
 main = runAsk defaultBehaviour $ do
@@ -166,11 +167,12 @@ instance Askable Date where
 
 - Custom prompt
 ```haskell
+import Control.Monad.IO.Class (liftIO)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.IO as TextIO
 
-import System.Console.Ask (Ask, ask', askOptional', askOrElse', defaultBehaviour, liftIO, runAsk)
+import System.Console.Ask (Ask, ask', askOptional', askOrElse', defaultBehaviour, runAsk)
 
 main :: IO ()
 main = runAsk defaultBehaviour $ do
@@ -200,11 +202,12 @@ Need notifications: True
 
 - Customisable behaviour (See also: [Behaviour.hs](https://github.com/t-sasaki915/ConsoleAsk/blob/main/src/System/Console/Ask/Behaviour.hs))
 ```haskell
+import Control.Monad.IO.Class (liftIO)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.IO as TextIO
 
-import System.Console.Ask (Ask, ask, askOptional, askOrElse, defaultBehaviour, liftIO, runAsk, withBehaviour)
+import System.Console.Ask (Ask, ask, askOptional, askOrElse, defaultBehaviour, runAsk, withBehaviour)
 import System.Console.Ask.Behaviour (DefaultValueStyle (..), defaultValueStyle, invalidInputErrorMsg, set)
 
 main :: IO ()

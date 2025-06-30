@@ -1,19 +1,16 @@
 module System.Console.Ask
     ( AskT (..)
-    , Question
-    , Prompt
     , Ask
-    , defaultBehaviour
     , runAskT
     , runAsk
-    , ask'
-    , askOrElse'
-    , askOptional'
     , ask
     , askOrElse
     , askOptional
+    , ask'
+    , askOrElse'
+    , askOptional'
+    , defaultBehaviour
     , withBehaviour
-    , liftIO
     ) where
 
 import           Control.Monad.IO.Class       (MonadIO (..))
