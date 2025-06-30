@@ -204,21 +204,22 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.IO as TextIO
 
-import System.Console.Ask (ask, askOptional, askOrElse, defaultBehaviour, runAsk)
+import System.Console.Ask (Ask, ask, askOptional, askOrElse, defaultBehaviour, liftIO, runAsk, withBehaviour)
 import System.Console.Ask.Behaviour (DefaultValueStyle (..), defaultValueStyle, invalidInputErrorMsg, set)
 
 main :: IO ()
-main = do
+main = runAsk defaultBehaviour $ do
     let customBehaviour1 = set invalidInputErrorMsg (Just "??????") defaultBehaviour
         customBehaviour2 = set defaultValueStyle OnNewline defaultBehaviour
 
-    name              <- runAsk defaultBehaviour (ask         "What is your name?")               :: IO Text
-    age               <- runAsk customBehaviour1 (askOptional "How old are you?")                 :: IO (Maybe Int)
-    needNotifications <- runAsk customBehaviour2 (askOrElse   "Do you need notifications?" False) :: IO Bool
+    name              <- ask "What is your name?" :: Ask Text
+    age               <- withBehaviour customBehaviour1 (askOptional "How old are you?")                 :: Ask (Maybe Int)
+    needNotifications <- withBehaviour customBehaviour2 (askOrElse   "Do you need notifications?" False) :: Ask Bool
 
-    TextIO.putStrLn ("Name: " <> name)
-    TextIO.putStrLn ("Age: " <> Text.show age)
-    TextIO.putStrLn ("Need notifications: " <> Text.show needNotifications)
+    liftIO $ do
+        TextIO.putStrLn ("Name: " <> name)
+        TextIO.putStrLn ("Age: " <> Text.show age)
+        TextIO.putStrLn ("Need notifications: " <> Text.show needNotifications)
 ```
 ```
 What is your name?

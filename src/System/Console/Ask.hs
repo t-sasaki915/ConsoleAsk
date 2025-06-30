@@ -14,6 +14,7 @@ module System.Console.Ask
     , ask
     , askOrElse
     , askOptional
+    , withBehaviour
     , liftIO
     ) where
 
@@ -86,3 +87,6 @@ askOrElse question defaultVal = askOrElse' question defaultVal defaultPrompt
 
 askOptional :: (MonadIO m, Askable a) => Question -> AskT m (Maybe a)
 askOptional question = askOptional' question defaultPrompt
+
+withBehaviour :: Behaviour -> AskT m a -> AskT m a
+withBehaviour behaviour = AskT . const  . runAskT behaviour
