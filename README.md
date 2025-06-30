@@ -98,19 +98,24 @@ UserInformation
 ```
 
 ## Features
-- Automatically parses input values to `Askable` instance types.
+- Automatically parses input values to `Askable` instances. (See also: [Askable.hs](https://github.com/t-sasaki915/ConsoleAsk/blob/main/src/System/Console/Ask/Askable.hs))
 ```haskell
+import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.IO as TextIO
 
-import System.Console.Ask (ask, defaultBehaviour, liftIO, runAsk)
+import System.Console.Ask (Ask, ask, askOptional, askOrElse, defaultBehaviour, liftIO, runAsk)
 
 main :: IO ()
 main = runAsk defaultBehaviour $ do
-    name <- ask "What is your name?" :: Ask Text
-    age  <- ask "How old are you?"   :: Ask Int
+    name              <- ask         "What is your name?"               :: Ask Text
+    age               <- askOptional "How old are you?"                 :: Ask (Maybe Int)
+    needNotifications <- askOrElse   "Do you need notifications?" False :: Ask Bool
 
-    liftIO $ TextIO.putStrLn ("Name: " <> name <> ", Age: " <> Text.show age)
+    liftIO $ do
+        TextIO.putStrLn ("Name: " <> name)
+        TextIO.putStrLn ("Age: " <> Text.show age)
+        TextIO.putStrLn ("Need notifications: " <> Text.show needNotifications)
 ```
 ```
 What is your name?
@@ -123,10 +128,12 @@ Invalid input.
 How old are you?
 > 18
 
-When is your birthday?
-> 15/9
+Do you need notifications? (Default: False)
+> no
 
-Name: Toma Sasaki, Age: 18, Birthday: Date 15 9
+Name: "Toma Sasaki"
+Age: 18
+Need notifications: False
 ```
 
 - `Askable` supports both `Text -> Maybe a` and parsec.
@@ -155,4 +162,80 @@ instance Askable Date where
         month <- many1 digit <&> read
 
         pure (Date day month)
+```
+
+- Custom prompt
+```haskell
+import Data.Text (Text)
+import qualified Data.Text as Text
+import qualified Data.Text.IO as TextIO
+
+import System.Console.Ask (Ask, ask', askOptional', askOrElse', defaultBehaviour, liftIO, runAsk)
+
+main :: IO ()
+main = runAsk defaultBehaviour $ do
+    name              <- ask'         "What is your name?"               "Text> " :: Ask Text
+    age               <- askOptional' "How old are you?"                 "Int > " :: Ask (Maybe Int)
+    needNotifications <- askOrElse'   "Do you need notifications?" False "Y/N > " :: Ask Bool
+
+    liftIO $ do
+        TextIO.putStrLn ("Name: " <> name)
+        TextIO.putStrLn ("Age: " <> Text.show age)
+        TextIO.putStrLn ("Need notifications: " <> Text.show needNotifications)
+```
+```
+What is your name?
+Text> Toma Sasaki
+
+How old are you?
+Int > 18
+
+Do you need notifications? (Default: False)
+Y/N > True
+
+Name: "Toma Sasaki"
+Age: 18
+Need notifications: True
+```
+
+- Customisable behaviour
+```haskell
+import Data.Text (Text)
+import qualified Data.Text as Text
+import qualified Data.Text.IO as TextIO
+
+import System.Console.Ask (ask, askOptional, askOrElse, defaultBehaviour, runAsk)
+import System.Console.Ask.Behaviour (DefaultValueStyle (..), defaultValueStyle, invalidInputErrorMsg, set)
+
+main :: IO ()
+main = do
+    let customBehaviour1 = set invalidInputErrorMsg (Just "??????") defaultBehaviour
+        customBehaviour2 = set defaultValueStyle OnNewline defaultBehaviour
+
+    name              <- runAsk defaultBehaviour (ask         "What is your name?")               :: IO Text
+    age               <- runAsk customBehaviour1 (askOptional "How old are you?")                 :: IO (Maybe Int)
+    needNotifications <- runAsk customBehaviour2 (askOrElse   "Do you need notifications?" False) :: IO Bool
+
+    TextIO.putStrLn ("Name: " <> name)
+    TextIO.putStrLn ("Age: " <> Text.show age)
+    TextIO.putStrLn ("Need notifications: " <> Text.show needNotifications)
+```
+```
+What is your name?
+> Toma Sasaki
+
+How old are you?
+> a
+??????
+
+How old are you?
+> 18
+
+Do you need notifications?
+Default: False
+> True
+
+Name: "Toma Sasaki"
+Age: 18
+Need notifications: True
 ```
