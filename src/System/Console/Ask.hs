@@ -5,7 +5,6 @@ module System.Console.Ask
     , Ask
     , defaultBehaviour
     , runAskT
-    , runAsk'
     , runAsk
     , defaultPrompt
     , ask'
@@ -24,27 +23,24 @@ import           System.Console.Ask.Askable
 import           System.Console.Ask.Behaviour
 import           System.Console.Ask.Internal
 
-newtype AskT m a = AskT { runAskT' :: Behaviour -> m a }
+newtype AskT m a = AskT (Behaviour -> m a)
 
 type Ask = AskT IO
 
 runAskT :: Behaviour -> AskT m a -> m a
-runAskT = flip runAskT'
-
-runAsk' :: Ask a -> Behaviour -> IO a
-runAsk' = runAskT'
+runAskT behaviour (AskT run) = run behaviour
 
 runAsk :: Behaviour -> Ask a -> IO a
 runAsk = runAskT
 
 getBehaviour :: Monad m => AskT m Behaviour
-getBehaviour = AskT { runAskT' = pure }
+getBehaviour = AskT pure
 
 instance Functor m => Functor (AskT m) where
-    fmap f (AskT run) = AskT { runAskT' = fmap f . run }
+    fmap f (AskT run) = AskT (fmap f . run)
 
 instance Monad m => Applicative (AskT m) where
-    pure a = AskT { runAskT' = const (pure a) }
+    pure = AskT . const . pure
 
     (AskT runF) <*> (AskT runA) = AskT $ \behaviour -> do
         f <- runF behaviour
@@ -57,7 +53,7 @@ instance Monad m => Monad (AskT m) where
         runAskT behaviour (f a)
 
 instance MonadIO m => MonadIO (AskT m) where
-    liftIO ma = AskT { runAskT' = const (liftIO ma) }
+    liftIO = AskT . const . liftIO
 
 defaultPrompt :: Prompt
 defaultPrompt = "> "
