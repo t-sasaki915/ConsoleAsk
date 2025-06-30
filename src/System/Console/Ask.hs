@@ -6,7 +6,6 @@ module System.Console.Ask
     , defaultBehaviour
     , runAskT
     , runAsk
-    , defaultPrompt
     , ask'
     , askOrElse'
     , askOptional'
@@ -33,9 +32,6 @@ type Ask = AskT IO
 runAsk :: Behaviour -> Ask a -> IO a
 runAsk = runAskT
 
-getBehaviour :: Monad m => AskT m Behaviour
-getBehaviour = AskT pure
-
 instance Functor m => Functor (AskT m) where
     fmap f (AskT run) = AskT (fmap f . run)
 
@@ -55,34 +51,26 @@ instance Monad m => Monad (AskT m) where
 instance MonadIO m => MonadIO (AskT m) where
     liftIO = AskT . const . liftIO
 
-defaultPrompt :: Prompt
-defaultPrompt = "> "
-
 ask' :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m a
 ask' question prompt =
-    fmap fromJust $
-        getBehaviour >>=
-            liftIO . ask_ True question prompt Nothing
+    fromJust <$> AskT (liftIO . ask_ True question prompt Nothing)
 
 askOrElse' :: (MonadIO m, Askable a) => Question -> a -> Prompt -> AskT m a
 askOrElse' question defaultVal prompt =
-    fmap fromJust $
-        getBehaviour >>=
-            liftIO . ask_ True question prompt (Just defaultVal)
+    fromJust <$> AskT (liftIO . ask_ True question prompt (Just defaultVal))
 
 askOptional' :: (MonadIO m, Askable a) => Question -> Prompt -> AskT m (Maybe a)
 askOptional' question prompt =
-    getBehaviour >>=
-        liftIO . ask_ False question prompt Nothing
+    AskT (liftIO . ask_ False question prompt Nothing)
 
 ask :: (MonadIO m, Askable a) => Question -> AskT m a
-ask question = ask' question defaultPrompt
+ask question = ask' question "> "
 
 askOrElse :: (MonadIO m, Askable a) => Question -> a -> AskT m a
-askOrElse question defaultVal = askOrElse' question defaultVal defaultPrompt
+askOrElse question defaultVal = askOrElse' question defaultVal "> "
 
 askOptional :: (MonadIO m, Askable a) => Question -> AskT m (Maybe a)
-askOptional question = askOptional' question defaultPrompt
+askOptional question = askOptional' question "> "
 
 withBehaviour :: Behaviour -> AskT m a -> AskT m a
 withBehaviour behaviour = AskT . const  . runAskT behaviour
