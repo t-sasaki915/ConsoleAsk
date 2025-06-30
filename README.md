@@ -8,7 +8,8 @@ import Data.Text (Text)
 import Text.Parsec (char, digit, many1)
 import Text.Regex.TDFA ((=~))
 
-import System.Console.Ask
+import System.Console.Ask (Ask, ask, askOptional, askOrElse, runAsk, defaultBehaviour)
+import System.Console.Ask.Askable (Askable (fromText), fromParsec)
 
 data UserInformation = UserInformation
     { name                   :: Text

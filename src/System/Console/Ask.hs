@@ -1,9 +1,5 @@
 module System.Console.Ask
-    ( NewlineTiming (..)
-    , DefaultValueStyle (..)
-    , Behaviour (..)
-    , AskT (..)
-    , Askable (..)
+    ( AskT (..)
     , Question
     , Prompt
     , Ask
@@ -18,7 +14,6 @@ module System.Console.Ask
     , ask
     , askOrElse
     , askOptional
-    , fromParsec
     ) where
 
 import           Control.Monad.IO.Class       (MonadIO (..))
