@@ -6,7 +6,7 @@ Maintainer  : netst915@gmail.com
 Portability : Portable
 
 @System.Console.Ask.Askable@ provides 'Askable' and 'fromParsec'.
-You should import this module if you want to do 'ask' for your original data types.
+You should import this module if you want to do 'System.Console.Ask.ask' for your original data types.
 -}
 
 {-# LANGUAGE FlexibleInstances #-}
@@ -24,7 +24,7 @@ import           Text.Regex.TDFA ((=~))
 
 -- | 'Askable' provides 'fromText'.
 -- Instances of 'Askable' must derive @Show@.
--- This typeclass is used when 'ask', 'askOptional' and 'askOrElse' try to parse user input.
+-- This typeclass is used when 'System.Console.Ask.ask', 'System.Console.Ask.askOptional' and 'System.Console.Ask.askOrElse' try to parse user input.
 -- Implementing 'fromText' is required.
 --
 class Show a => Askable a where

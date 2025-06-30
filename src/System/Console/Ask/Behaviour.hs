@@ -86,7 +86,7 @@ data DefaultValueStyle = OnQuestionLine | OnNewline deriving Eq
 -- 'set' is useful for editing already existing 'Behaviour' definitions field-by-field.
 --
 -- @
--- let customBehaviour = 'set' 'newlineTiming' 'BeforePrompt' 'defaultBehaviour'
+-- let customBehaviour = 'set' 'System.Console.Ask.Behaviour.newlineTiming' 'BeforePrompt' 'System.Console.Ask.Behaviour.defaultBehaviour'
 -- @
 --
 data Behaviour = Behaviour
