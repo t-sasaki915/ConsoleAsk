@@ -7,11 +7,6 @@ Portability : Portable
 
 @System.Console.Ask.Behaviour@ provides 'Behaviour', its fields and 'set'.
 You should import this module if you want to customise the behaviour of ConsoleAsk.
-'set' is from Lens and is supposed to be used for editing already existing 'Behaviour' definitions field-by-field.
-
-@
-let customBehaviour = 'set' 'newlineTiming' 'BeforePrompt' 'defaultBehaviour'
-@
 -}
 
 {-# LANGUAGE TemplateHaskell #-}
@@ -89,6 +84,10 @@ data DefaultValueStyle = OnQuestionLine | OnNewline deriving Eq
 
 -- | 'Behaviour' specifies ConsoleAsk behaviours.
 -- 'set' is useful for editing already existing 'Behaviour' definitions field-by-field.
+--
+-- @
+-- let customBehaviour = 'set' 'newlineTiming' 'BeforePrompt' 'defaultBehaviour'
+-- @
 --
 data Behaviour = Behaviour
     { -- | Please see 'NewlineTiming'.
