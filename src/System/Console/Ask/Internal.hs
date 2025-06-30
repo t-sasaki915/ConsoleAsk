@@ -1,3 +1,14 @@
+{-|
+Module      : System.Console.Ask.Internal
+Copyright   : 2025 Toma Sasaki
+Licence     : MIT
+Maintainer  : netst915@gmail.com
+Portability : Portable
+
+@System.Console.Ask.Internal@ is an internal module.
+You should not import this module.
+-}
+
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module System.Console.Ask.Internal
