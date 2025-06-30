@@ -1,7 +1,7 @@
 cabal-version: 2.2
 
 name:           ConsoleAsk
-version:        1.0.0.0
+version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/t-sasaki915/ConsoleAsk#readme>
 homepage:       https://github.com/t-sasaki915/ConsoleAsk#readme
 bug-reports:    https://github.com/t-sasaki915/ConsoleAsk/issues
