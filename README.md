@@ -198,7 +198,7 @@ Age: 18
 Need notifications: True
 ```
 
-- Customisable behaviour
+- Customisable behaviour (See also: [Behaviour.hs](https://github.com/t-sasaki915/ConsoleAsk/blob/main/src/System/Console/Ask/Behaviour.hs))
 ```haskell
 import Data.Text (Text)
 import qualified Data.Text as Text
