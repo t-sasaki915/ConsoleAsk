@@ -7,7 +7,7 @@ module System.Console.Ask.Askable
 
 import           Data.Text       (Text)
 import qualified Data.Text       as Text
-import           Text.Parsec     hiding (lower)
+import           Text.Parsec     (Parsec, anyChar, eof, parse)
 import           Text.Read       (readMaybe)
 import           Text.Regex.TDFA ((=~))
 

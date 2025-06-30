@@ -18,9 +18,9 @@ module System.Console.Ask
 
 import           Control.Monad.IO.Class       (MonadIO (..))
 import           Data.Maybe                   (fromJust)
-import           System.Console.Ask.Askable
-import           System.Console.Ask.Behaviour
-import           System.Console.Ask.Internal
+import           System.Console.Ask.Askable   (Askable)
+import           System.Console.Ask.Behaviour (Behaviour, defaultBehaviour)
+import           System.Console.Ask.Internal  (Prompt, Question, ask_)
 
 newtype AskT m a = AskT (Behaviour -> m a)
 
