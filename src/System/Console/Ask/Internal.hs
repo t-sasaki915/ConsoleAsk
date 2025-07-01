@@ -55,7 +55,7 @@ ask_ isMandatory question prompt defaultVal behaviour = do
             TextIO.putStrLn question
 
         Just defaultVal' ->
-            let defaultValMessage = _defaultValueViewer behaviour (Text.show defaultVal') in
+            let defaultValMessage = _defaultValueViewer behaviour (Text.pack $ show defaultVal') in
                 case _defaultValueStyle behaviour of
                     OnQuestionLine ->
                         TextIO.putStrLn (question <> " (" <> defaultValMessage <> ")")
