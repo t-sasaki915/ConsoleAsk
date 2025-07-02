@@ -22,35 +22,38 @@ import           Text.Parsec     (Parsec, anyChar, eof, parse)
 import           Text.Read       (readMaybe)
 import           Text.Regex.TDFA ((=~))
 
--- | 'Askable' provides 'fromText'.
--- Instances of 'Askable' must derive @Show@.
--- This typeclass is used when 'System.Console.Ask.ask', 'System.Console.Ask.askOptional' and 'System.Console.Ask.askOrElse' try to parse user input.
--- Implementing 'fromText' is required.
---
+{-|
+'Askable' provides 'fromText'.
+Instances of 'Askable' must derive @Show@.
+This typeclass is used when 'System.Console.Ask.ask', 'System.Console.Ask.askOptional' and 'System.Console.Ask.askOrElse' try to parse user input.
+Implementing 'fromText' is required.
+-}
 class Show a => Askable a where
-    -- | 'fromText' converts @Text@ into a certain type.
-    -- Returning @Nothing@ makes the conversion failed.
-    --
-    -- @
-    -- data EmailAddress = EmailAddress Text deriving Show
-    --
-    -- instance 'Askable' EmailAddress where
-    --     'fromText' text =
-    --         if text =~ ("[a-zA-Z0-9+._-]+@[a-zA-Z-]+\\.[a-z]+" :: Text)
-    --             then Just (EmailAddress text)
-    --             else Nothing
-    -- @
-    --
+    {-|
+    'fromText' converts @Text@ into a certain type.
+    Returning @Nothing@ makes the conversion failed.
+
+    @
+    data EmailAddress = EmailAddress Text deriving Show
+
+    instance 'Askable' EmailAddress where
+        'fromText' text =
+            if text =~ ("[a-zA-Z0-9+._-]+@[a-zA-Z-]+\\.[a-z]+" :: Text)
+                then Just (EmailAddress text)
+                else Nothing
+    @
+    -}
     fromText :: Text -> Maybe a
 
--- | 'fromParsec' converts @Parsec Text () a@ into @Text -> Maybe a@.
--- It is supposed to be used with 'fromText'.
---
--- @
--- instance 'Askable' 'Char' where
---     'fromText' = 'fromParsec' (anyChar <* eof)
--- @
---
+{-|
+'fromParsec' converts @Parsec Text () a@ into @Text -> Maybe a@.
+It is supposed to be used with 'fromText'.
+
+@
+instance 'Askable' 'Char' where
+    'fromText' = 'fromParsec' (anyChar <* eof)
+@
+-}
 fromParsec :: Parsec Text () a -> Text -> Maybe a
 fromParsec parser = either (const Nothing) Just . parse parser ""
 
