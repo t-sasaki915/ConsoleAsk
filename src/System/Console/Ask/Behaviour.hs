@@ -95,8 +95,10 @@ let customBehaviour = 'set' 'System.Console.Ask.Behaviour.newlineTiming' 'Before
 data Behaviour = Behaviour
     { -- | Please see 'NewlineTiming'.
       _newlineTiming             :: NewlineTiming
+
       -- | Please see 'DefaultValueStyle'.
     , _defaultValueStyle         :: DefaultValueStyle
+
       {-|
       '_defaultValueViewer' is the message displayed if the question has a default value.
       It is a function whose argument is the default value of the question.
@@ -108,6 +110,7 @@ data Behaviour = Behaviour
       >
       -}
     , _defaultValueViewer        :: Text -> Text
+
       {-|
       '_mandatoryQuestionErrorMsg' is the message displayed if the user has not answered the question even though it is mandatory.
       If @Nothing@, ConsoleAsk will not display the message.
@@ -120,6 +123,7 @@ data Behaviour = Behaviour
       PLEASE ANSWER THIS QUESTION!!!
       -}
     , _mandatoryQuestionErrorMsg :: Maybe Text
+
       {-|
       '_invalidInputErrorMsg' is the message displayed if the user enters an invalid value.
       If @Nothing@, ConsoleAsk will not display the message.
