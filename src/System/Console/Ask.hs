@@ -143,8 +143,8 @@ askOptional :: (MonadIO m, Askable a) => Question -> AskT m (Maybe a)
 askOptional question = askOptional' question "> "
 
 {-|
-'withBehaviour' attaches a behaviour to 'AskT'.
-The behaviour specified to 'runAskT' will be ignored.
+'withBehaviour' attaches a 'Behaviour' to 'AskT'.
+The 'Behaviour' specified to 'runAskT' will be ignored.
 
 @
 data Directories = Directories
