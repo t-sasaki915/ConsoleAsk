@@ -132,7 +132,7 @@ How old are you?
 Do you need notifications? (Default: False)
 > no
 
-Name: "Toma Sasaki"
+Name: Toma Sasaki
 Age: 18
 Need notifications: False
 ```
@@ -195,7 +195,7 @@ Int > 18
 Do you need notifications? (Default: False)
 Y/N > True
 
-Name: "Toma Sasaki"
+Name: Toma Sasaki
 Age: 18
 Need notifications: True
 ```
@@ -239,7 +239,7 @@ Do you need notifications?
 Default: False
 > True
 
-Name: "Toma Sasaki"
+Name: Toma Sasaki
 Age: 18
 Need notifications: True
 ```
